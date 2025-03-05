@@ -1,0 +1,30 @@
+services:
+  clickhouse:
+    image: clickhouse-server:latest
+    container_name: clickhouse
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /mnt/mk_data/database/clickhouse_data:/var/lib/clickhouse
+      - /mnt/mk_data/database/clickhouse_data/logs:/var/log/clickhouse-server
+      - /mnt/mk_data/database/clickhouse_data/config:/etc/clickhouse-server
+    ports:
+      - 8123:8123  # HTTP接口
+      - 9000:9000  # 原生客户端接口
+      - 9009:9009  # 集群内部通信端口
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    user: 999:999
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 4G

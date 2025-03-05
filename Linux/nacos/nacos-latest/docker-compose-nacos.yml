@@ -1,4 +1,3 @@
-version: '3'
 services:
   nacos:
     image: nacos/nacos-server:latest                             # 镜像`nacos/nacos-server:latest`
