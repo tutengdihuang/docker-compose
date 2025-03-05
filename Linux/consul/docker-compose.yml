@@ -1,0 +1,23 @@
+services:
+  consul:
+    image: consul:1.15.4
+    container_name: consul
+    restart: unless-stopped
+    volumes:
+      - /mnt/mk_data/database/consul_data:/consul/data
+    environment:
+      - TZ=Asia/Shanghai
+      - 'CONSUL_BIND_INTERFACE=enp5s0'
+      - 'CONSUL_CLIENT_INTERFACE=enp5s0'
+    command: >
+      agent -server
+      -bootstrap-expect=1
+      -ui
+      -client=0.0.0.0
+      -data-dir=/consul/data
+    privileged: true
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+      - NET_ADMIN
+    network_mode: "host"  # 使用主机网络模式，直接使用主机的 8500 和 8600 端口
