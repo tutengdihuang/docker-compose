@@ -1,23 +1,21 @@
+version: '3.7'
+
 services:
   consul:
     image: consul:1.15.4
     container_name: consul
     restart: unless-stopped
     volumes:
-      - /mnt/mk_data/database/consul_data:/consul/data
+      - /mnt/mk_data/database/consul_data:/consul/data # 持久化数据目录‌:ml-citation{ref="1,2" data="citationList"}
     environment:
       - TZ=Asia/Shanghai
-      - 'CONSUL_BIND_INTERFACE=enp5s0'
-      - 'CONSUL_CLIENT_INTERFACE=enp5s0'
+      - CONSUL_BIND_INTERFACE=enp5s0 # 绑定指定网络接口‌:ml-citation{ref="4,5" data="citationList"}
+      - CONSUL_CLIENT_INTERFACE=enp5s0
     command: >
-      agent -server
-      -bootstrap-expect=1
-      -ui
-      -client=0.0.0.0
-      -data-dir=/consul/data
-    privileged: true
+      agent -server -bootstrap-expect=1 -ui -client=0.0.0.0 -data-dir=/consul/data -bind=192.168.1.6 -advertise=192.168.1.6
+    privileged: true # 解决容器权限问题‌:ml-citation{ref="2" data="citationList"}
     cap_add:
       - SYS_ADMIN
       - DAC_READ_SEARCH
-      - NET_ADMIN
-    network_mode: "host"  # 使用主机网络模式，直接使用主机的 8500 和 8600 端口
+      - NET_ADMIN # 容器网络管理权限‌:ml-citation{ref="5" data="citationList"}
+    network_mode: "host" # 使用主机网络模式‌:ml-citation{ref="4,5" data="citationList"}
