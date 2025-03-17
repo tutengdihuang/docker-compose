@@ -1,2 +1,19 @@
 ### IntelliJ IDEA ###
 .idea
+
+# Redis 集群数据目录
+redis-cluster/*/data/
+redis-cluster/redis-6387/
+
+# 其他常见的忽略项
+*.log
+*.pid
+*.sock
+
+redis-cluster/redis-6381/data/*
+redis-cluster/redis-6382/data/*
+redis-cluster/redis-6383/data/*
+redis-cluster/redis-6384/data/*
+redis-cluster/redis-6385/data/*
+redis-cluster/redis-6386/data/*
+redis-cluster/redis-6388/data/*

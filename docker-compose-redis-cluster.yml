@@ -1,0 +1,15 @@
+services:
+  redis-6381:
+    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+  redis-6382:
+    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+  redis-6383:
+    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+  redis-6384:
+    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+  redis-6385:
+    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+  redis-6386:
+    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+  redis-6388:
+    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
