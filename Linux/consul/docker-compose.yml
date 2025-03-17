@@ -9,10 +9,10 @@ services:
       - /mnt/mk_data/database/consul_data:/consul/data # 持久化数据目录‌:ml-citation{ref="1,2" data="citationList"}
     environment:
       - TZ=Asia/Shanghai
-      - CONSUL_BIND_INTERFACE=enp5s0 # 绑定指定网络接口‌:ml-citation{ref="4,5" data="citationList"}
-      - CONSUL_CLIENT_INTERFACE=enp5s0
+      - CONSUL_BIND_INTERFACE=enp0s31f6 # 绑定指定网络接口‌:ml-citation{ref="4,5" data="citationList"}
+      - CONSUL_CLIENT_INTERFACE=enp0s31f6
     command: >
-      agent -server -bootstrap-expect=1 -ui -client=0.0.0.0 -data-dir=/consul/data -bind=192.168.1.6 -advertise=192.168.1.6
+      agent -server -bootstrap-expect=1 -ui -client=0.0.0.0 -data-dir=/consul/data -bind=192.168.1.200 -advertise=192.168.1.200
     privileged: true # 解决容器权限问题‌:ml-citation{ref="2" data="citationList"}
     cap_add:
       - SYS_ADMIN

@@ -1,12 +1,12 @@
-   services:
-     postgresql:
-       image: registry.cn-hangzhou.aliyuncs.com/zhengqing/postgres:14.5
-       container_name: postgresql
-       environment:
-         POSTGRES_PASSWORD: 123456
-         PGDATA: /var/lib/postgresql/data/pgdata
-       volumes:
-         - /mnt/mk_data/database/postgres_data:/var/lib/postgresql/data
-       ports:
-         - 5432:5432
-       user: "999:999"
+services:
+  postgresql:
+    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/postgres:14.5
+    container_name: postgresql
+    environment:
+      POSTGRES_PASSWORD: 123456
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - /fs/1000/ftp/postgres_mk_data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    user: "admin:admin"

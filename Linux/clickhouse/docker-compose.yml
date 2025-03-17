@@ -1,18 +1,18 @@
 services:
   clickhouse:
-    image: clickhouse-server:latest
+    image: clickhouse/clickhouse-server:22.3.13
     container_name: clickhouse
     restart: unless-stopped
     environment:
       TZ: Asia/Shanghai
     volumes:
-      - /mnt/mk_data/database/clickhouse_data:/var/lib/clickhouse
-      - /mnt/mk_data/database/clickhouse_data/logs:/var/log/clickhouse-server
-      - /mnt/mk_data/database/clickhouse_data/config:/etc/clickhouse-server
+      - /home/allen/clickhouse/data:/var/lib/clickhouse
+      - /home/allen/clickhouse/logs:/var/log/clickhouse-server
+      - /home/allen/clickhouse/config:/etc/clickhouse-server
     ports:
-      - 8123:8123  # HTTP接口
-      - 9000:9000  # 原生客户端接口
-      - 9009:9009  # 集群内部通信端口
+      - 8123:8123 # HTTP接口
+      - 9000:9000 # 原生客户端接口
+      - 9009:9009 # 集群内部通信端口
     ulimits:
       nofile:
         soft: 262144
