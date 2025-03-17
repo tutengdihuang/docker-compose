@@ -1,15 +1,115 @@
+version: '3'
+
+# 网桥redis -> 方便相互通讯
+networks:
+  redis:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.28.0.0/24"
+
+x-redis-common: &redis-common
+  image: redis:7.0.5
+  restart: unless-stopped
+  environment: &redis-env
+    TZ: Asia/Shanghai
+    LANG: en_US.UTF-8
+
 services:
-  redis-6381:
-    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+  redis-6381: &redis-base
+    <<: *redis-common
+    container_name: redis-6381
+    command: redis-server /etc/redis/redis.conf --port 6381 --requirepass 123456 --appendonly yes --cluster-enabled yes
+    volumes:
+      - "./redis-cluster/redis-6381/data:/data"
+      - "./redis-cluster/redis-6381/config/redis.conf:/etc/redis/redis.conf"
+    ports:
+      - "6381:6381"
+      - "16381:16381"
+    networks:
+      redis:
+        ipv4_address: 172.28.0.11
+
   redis-6382:
-    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+    <<: *redis-base
+    container_name: redis-6382
+    command: redis-server /etc/redis/redis.conf --port 6382 --requirepass 123456 --appendonly yes --cluster-enabled yes
+    volumes:
+      - "./redis-cluster/redis-6382/data:/data"
+      - "./redis-cluster/redis-6382/config/redis.conf:/etc/redis/redis.conf"
+    ports:
+      - "6382:6382"
+      - "16382:16382"
+    networks:
+      redis:
+        ipv4_address: 172.28.0.12
+
   redis-6383:
-    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+    <<: *redis-base
+    container_name: redis-6383
+    command: redis-server /etc/redis/redis.conf --port 6383 --requirepass 123456 --appendonly yes --cluster-enabled yes
+    volumes:
+      - "./redis-cluster/redis-6383/data:/data"
+      - "./redis-cluster/redis-6383/config/redis.conf:/etc/redis/redis.conf"
+    ports:
+      - "6383:6383"
+      - "16383:16383"
+    networks:
+      redis:
+        ipv4_address: 172.28.0.13
+
   redis-6384:
-    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+    <<: *redis-base
+    container_name: redis-6384
+    command: redis-server /etc/redis/redis.conf --port 6384 --requirepass 123456 --appendonly yes --cluster-enabled yes
+    volumes:
+      - "./redis-cluster/redis-6384/data:/data"
+      - "./redis-cluster/redis-6384/config/redis.conf:/etc/redis/redis.conf"
+    ports:
+      - "6384:6384"
+      - "16384:16384"
+    networks:
+      redis:
+        ipv4_address: 172.28.0.14
+
   redis-6385:
-    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+    <<: *redis-base
+    container_name: redis-6385
+    command: redis-server /etc/redis/redis.conf --port 6385 --requirepass 123456 --appendonly yes --cluster-enabled yes
+    volumes:
+      - "./redis-cluster/redis-6385/data:/data"
+      - "./redis-cluster/redis-6385/config/redis.conf:/etc/redis/redis.conf"
+    ports:
+      - "6385:6385"
+      - "16385:16385"
+    networks:
+      redis:
+        ipv4_address: 172.28.0.15
+
   redis-6386:
-    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+    <<: *redis-base
+    container_name: redis-6386
+    command: redis-server /etc/redis/redis.conf --port 6386 --requirepass 123456 --appendonly yes --cluster-enabled yes
+    volumes:
+      - "./redis-cluster/redis-6386/data:/data"
+      - "./redis-cluster/redis-6386/config/redis.conf:/etc/redis/redis.conf"
+    ports:
+      - "6386:6386"
+      - "16386:16386"
+    networks:
+      redis:
+        ipv4_address: 172.28.0.16
+
   redis-6388:
-    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
+    <<: *redis-base
+    container_name: redis-6388
+    command: redis-server /etc/redis/redis.conf --port 6388 --requirepass 123456 --appendonly yes --cluster-enabled yes
+    volumes:
+      - "./redis-cluster/redis-6388/data:/data"
+      - "./redis-cluster/redis-6388/config/redis.conf:/etc/redis/redis.conf"
+    ports:
+      - "6388:6388"
+      - "16388:16388"
+    networks:
+      redis:
+        ipv4_address: 172.28.0.18
