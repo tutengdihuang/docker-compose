@@ -9,23 +9,29 @@ networks:
         - subnet: "172.28.0.0/24"
 
 x-redis-common: &redis-common
-  image: redis:7.0.5
+  image: registry.cn-hangzhou.aliyuncs.com/zhengqing/redis:7.0.5
   restart: unless-stopped
+  user: "999:999"
   environment: &redis-env
     TZ: Asia/Shanghai
     LANG: en_US.UTF-8
+  healthcheck:
+    test: [ "CMD", "redis-cli", "-h", "localhost", "-p", "6379", "-a", "123456", "ping" ]
+    interval: 5s
+    timeout: 3s
+    retries: 5
 
 services:
   redis-6381: &redis-base
     <<: *redis-common
     container_name: redis-6381
-    command: redis-server /etc/redis/redis.conf --port 6381 --requirepass 123456 --appendonly yes --cluster-enabled yes
+    command: redis-server /etc/redis/redis.conf --port 6379 --requirepass 123456 --appendonly yes --cluster-enabled yes
     volumes:
       - "./redis-cluster/redis-6381/data:/data"
       - "./redis-cluster/redis-6381/config/redis.conf:/etc/redis/redis.conf"
     ports:
-      - "6381:6381"
-      - "16381:16381"
+      - "6381:6379"
+      - "16381:16379"
     networks:
       redis:
         ipv4_address: 172.28.0.11
@@ -33,13 +39,12 @@ services:
   redis-6382:
     <<: *redis-base
     container_name: redis-6382
-    command: redis-server /etc/redis/redis.conf --port 6382 --requirepass 123456 --appendonly yes --cluster-enabled yes
     volumes:
       - "./redis-cluster/redis-6382/data:/data"
       - "./redis-cluster/redis-6382/config/redis.conf:/etc/redis/redis.conf"
     ports:
-      - "6382:6382"
-      - "16382:16382"
+      - "6382:6379"
+      - "16382:16379"
     networks:
       redis:
         ipv4_address: 172.28.0.12
@@ -47,13 +52,12 @@ services:
   redis-6383:
     <<: *redis-base
     container_name: redis-6383
-    command: redis-server /etc/redis/redis.conf --port 6383 --requirepass 123456 --appendonly yes --cluster-enabled yes
     volumes:
       - "./redis-cluster/redis-6383/data:/data"
       - "./redis-cluster/redis-6383/config/redis.conf:/etc/redis/redis.conf"
     ports:
-      - "6383:6383"
-      - "16383:16383"
+      - "6383:6379"
+      - "16383:16379"
     networks:
       redis:
         ipv4_address: 172.28.0.13
@@ -61,13 +65,12 @@ services:
   redis-6384:
     <<: *redis-base
     container_name: redis-6384
-    command: redis-server /etc/redis/redis.conf --port 6384 --requirepass 123456 --appendonly yes --cluster-enabled yes
     volumes:
       - "./redis-cluster/redis-6384/data:/data"
       - "./redis-cluster/redis-6384/config/redis.conf:/etc/redis/redis.conf"
     ports:
-      - "6384:6384"
-      - "16384:16384"
+      - "6384:6379"
+      - "16384:16379"
     networks:
       redis:
         ipv4_address: 172.28.0.14
@@ -75,13 +78,12 @@ services:
   redis-6385:
     <<: *redis-base
     container_name: redis-6385
-    command: redis-server /etc/redis/redis.conf --port 6385 --requirepass 123456 --appendonly yes --cluster-enabled yes
     volumes:
       - "./redis-cluster/redis-6385/data:/data"
       - "./redis-cluster/redis-6385/config/redis.conf:/etc/redis/redis.conf"
     ports:
-      - "6385:6385"
-      - "16385:16385"
+      - "6385:6379"
+      - "16385:16379"
     networks:
       redis:
         ipv4_address: 172.28.0.15
@@ -89,13 +91,12 @@ services:
   redis-6386:
     <<: *redis-base
     container_name: redis-6386
-    command: redis-server /etc/redis/redis.conf --port 6386 --requirepass 123456 --appendonly yes --cluster-enabled yes
     volumes:
       - "./redis-cluster/redis-6386/data:/data"
       - "./redis-cluster/redis-6386/config/redis.conf:/etc/redis/redis.conf"
     ports:
-      - "6386:6386"
-      - "16386:16386"
+      - "6386:6379"
+      - "16386:16379"
     networks:
       redis:
         ipv4_address: 172.28.0.16
@@ -103,13 +104,42 @@ services:
   redis-6388:
     <<: *redis-base
     container_name: redis-6388
-    command: redis-server /etc/redis/redis.conf --port 6388 --requirepass 123456 --appendonly yes --cluster-enabled yes
     volumes:
       - "./redis-cluster/redis-6388/data:/data"
       - "./redis-cluster/redis-6388/config/redis.conf:/etc/redis/redis.conf"
     ports:
-      - "6388:6388"
-      - "16388:16388"
+      - "6388:6379"
+      - "16388:16379"
     networks:
       redis:
         ipv4_address: 172.28.0.18
+
+  redis-cluster-init:
+    <<: *redis-common
+    depends_on:
+      redis-6381:
+        condition: service_healthy
+      redis-6382:
+        condition: service_healthy
+      redis-6383:
+        condition: service_healthy
+      redis-6384:
+        condition: service_healthy
+      redis-6385:
+        condition: service_healthy
+      redis-6386:
+        condition: service_healthy
+      redis-6388:
+        condition: service_healthy
+    command: >
+      sh -c 'until redis-cli -h 172.28.0.11 -p 6379 -a 123456 ping; do
+        echo "Waiting for redis cluster to be ready..."
+        sleep 1
+      done && redis-cli -h 172.28.0.11 -p 6379 -a 123456 --cluster create \
+        172.28.0.11:6379 172.28.0.12:6379 172.28.0.13:6379 \
+        172.28.0.14:6379 172.28.0.15:6379 172.28.0.16:6379 \
+        172.28.0.18:6379 \
+        --cluster-replicas 1 --cluster-yes'
+    networks:
+      redis:
+        ipv4_address: 172.28.0.20
