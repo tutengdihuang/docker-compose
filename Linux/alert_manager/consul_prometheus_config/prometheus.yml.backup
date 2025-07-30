@@ -1,0 +1,55 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: prometheus-local
+    replica: 0
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['192.168.100.200:9090']
+        labels:
+          app: "20250512"
+          area: "全国"
+          biz: "基础环境智能监控平台prometheus"
+          cluster: "北中心"
+          env: "生产"
+          instance: "192.168.100.200"
+          job: "prometheus"
+          replica: "0"
+          support: "v1"
+          tmp_hash: "1"
+        discovered_labels:
+          __meta_consul_service_address: "192.168.100.200"
+          __meta_consul_service_port: "9090"
+          __meta_consul_address: "192.168.100.200:8500"
+          __meta_consul_node: "prometheus-node"
+          __meta_consul_dc: "dc1"
+          __meta_consul_health: "passing"
+          __meta_consul_service: "prometheus"
+          __meta_consul_service_id: "prometheus-192.168.100.200-9090"
+
+  - job_name: 'windows'
+    static_configs:
+      - targets: ['192.168.100.200:9182']
+        labels:
+          app: "None"
+          area: "全国"
+          biz: "基础环境智能监控平台windows"
+          cluster: "北中心"
+          env: "生产"
+          instance: "192.168.100.200"
+          job: "linux_prod"
+          replica: "0"
+          support: "v1"
+          tmp_hash: "1"
+        discovered_labels:
+          __meta_consul_service_address: "192.168.100.200"
+          __meta_consul_service_port: "9182"
+          __meta_consul_address: "192.168.100.200:8500"
+          __meta_consul_node: "windows-node"
+          __meta_consul_dc: "dc1"
+          __meta_consul_health: "passing"
+          __meta_consul_service: "windows-exporter"
+          __meta_consul_service_id: "windows-exporter-192.168.100.200-9182"
