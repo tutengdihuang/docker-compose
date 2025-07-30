@@ -3,7 +3,7 @@
 # Consul 服务初始化脚本
 # 在 Consul 启动后自动注册默认服务
 
-CONSUL_URL="${CONSUL_URL:-http://consul-south:8500}"
+CONSUL_URL="${CONSUL_URL:-http://consul-south:8501}"
 MAX_RETRIES=30
 RETRY_INTERVAL=2
 
