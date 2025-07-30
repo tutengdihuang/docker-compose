@@ -2,8 +2,9 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
   external_labels:
-    cluster: prometheus-north
+    # cluster: prometheus-north
     replica: 0
+    # env: 生产
 
 scrape_configs:
   - job_name: 'prometheus'
