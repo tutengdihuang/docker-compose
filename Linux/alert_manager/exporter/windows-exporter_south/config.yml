@@ -1,0 +1,66 @@
+# Windows Exporter Configuration for South Environment
+# 南中心环境 windows-exporter 配置
+
+# 监听配置
+web:
+  listen-address: ":9182"
+  telemetry-path: "/metrics"
+
+# 启用的收集器
+collectors:
+  enabled:
+    - cpu
+    - cs           # 计算机系统
+    - logical_disk # 逻辑磁盘
+    - memory       # 内存
+    - net          # 网络接口
+    - os           # 操作系统
+    - process      # 进程
+    - service      # 服务
+    - system       # 系统
+    - textfile     # 文本文件收集器
+    - time         # 时间
+    - cpu_info     # CPU信息
+    - hyperv       # Hyper-V
+    - iis          # IIS (如果有)
+    - mssql        # SQL Server (如果有)
+    - tcp          # TCP连接
+    - thermalzone  # 温度区域
+    - scheduled_task # 计划任务
+
+# 收集器特定配置
+collector:
+  # 进程收集器配置
+  process:
+    # 包含的进程（正则表达式）
+    include: ".*"
+    # 排除的进程
+    exclude: "^(Idle|System|Registry|Memory Compression)$"
+    
+  # 服务收集器配置  
+  service:
+    # 监控的服务状态
+    services-where: "Name='Themes' OR Name='Winmgmt' OR Name='BITS'"
+    
+  # 逻辑磁盘配置
+  logical_disk:
+    # 包含的卷
+    volume: "/.+"
+    # 排除的卷
+    exclude: "^(HarddiskVolume.*|System Reserved)$"
+    
+  # 网络接口配置
+  net:
+    # 包含的网络接口
+    nic-include: ".*"
+    # 排除的网络接口
+    nic-exclude: "^(isatap|Teredo)"
+
+# 环境标识标签
+global_labels:
+  environment: "南中心"
+  env: "生产"
+  cluster: "南中心"
+  region: "south"
+  datacenter: "shenzhen"
+  os_type: "windows"

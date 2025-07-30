@@ -1,0 +1,93 @@
+# Process Exporter Configuration for South Environment
+# 南中心环境 process-exporter 配置
+
+# 进程匹配配置
+process_names:
+  # Java应用进程
+  - name: "java_apps"
+    cmdline:
+    - 'java.*jar'
+    - 'java.*-Dspring'
+    - 'java.*tomcat'
+    
+  # Docker相关进程
+  - name: "docker"
+    cmdline:
+    - 'dockerd'
+    - 'docker-containerd'
+    - 'docker-proxy'
+    
+  # 数据库进程
+  - name: "mysql"
+    cmdline:
+    - 'mysqld'
+    
+  - name: "redis"
+    cmdline:
+    - 'redis-server'
+    
+  - name: "postgres"
+    cmdline:
+    - 'postgres'
+    
+  # Web服务器
+  - name: "nginx"
+    cmdline:
+    - 'nginx'
+    
+  - name: "apache"
+    cmdline:
+    - 'httpd'
+    - 'apache2'
+    
+  # 监控相关进程
+  - name: "prometheus"
+    cmdline:
+    - 'prometheus'
+    
+  - name: "grafana"
+    cmdline:
+    - 'grafana-server'
+    
+  - name: "consul"
+    cmdline:
+    - 'consul'
+    
+  - name: "node_exporter"
+    cmdline:
+    - 'node_exporter'
+    
+  # 系统进程
+  - name: "systemd"
+    cmdline:
+    - 'systemd'
+    
+  - name: "ssh"
+    cmdline:
+    - 'sshd'
+    
+  # 其他重要进程
+  - name: "other_processes"
+    cmdline:
+    - '.+'
+
+# 指标收集配置
+metrics:
+  # 是否收集进程启动时间
+  collect_start_time: true
+  # 是否收集进程打开的文件描述符数量
+  collect_open_fds: true
+  # 是否收集进程内存使用情况
+  collect_memory: true
+  # 是否收集进程CPU使用情况
+  collect_cpu: true
+  # 是否收集进程线程数
+  collect_threads: true
+
+# 环境标识
+environment:
+  name: "南中心"
+  env: "生产"
+  cluster: "南中心"
+  region: "south"
+  datacenter: "shenzhen"

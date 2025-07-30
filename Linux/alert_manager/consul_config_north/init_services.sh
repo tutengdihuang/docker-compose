@@ -100,7 +100,7 @@ register_node_exporter() {
     curl -X PUT --data '{
         "Name": "node-exporter",
         "ID": "node-exporter-192.168.100.201-9100",
-        "Address": "192.168.100.202",
+        "Address": "node-exporter-north",
         "Port": 9100,
         "Tags": [
             "app=north_node",

@@ -140,7 +140,7 @@ services:
     ports:
       - "6080:80"
     volumes:
-      - ./exporter/windows-metrics:/usr/share/nginx/html
+      - ./windows-metrics:/usr/share/nginx/html
     restart: unless-stopped
     networks:
       - monitoring
@@ -154,7 +154,7 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
-      - ./exporter/node-exporter_north:/etc/node-exporter:ro
+      - ./node-exporter_north:/etc/node-exporter:ro
     command:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
@@ -179,7 +179,7 @@ services:
     ports:
       - "9182:80"
     volumes:
-      - ./exporter/windows-metrics:/usr/share/nginx/html
+      - ./windows-metrics:/usr/share/nginx/html
     restart: unless-stopped
     networks:
       - monitoring
@@ -190,7 +190,7 @@ services:
     ports:
       - "9256:9256"
     volumes:
-      - ./exporter/process-exporter_north/config.yml:/config/config.yml:ro
+      - ./process-exporter_north/config.yml:/config/config.yml:ro
       - /proc:/host/proc:ro
     command:
       - '--config.path=/config/config.yml'
@@ -335,7 +335,7 @@ services:
     ports:
       - "6081:80"
     volumes:
-      - ./exporter/windows-metrics:/usr/share/nginx/html
+      - ./windows-metrics:/usr/share/nginx/html
     restart: unless-stopped
     networks:
       - monitoring
@@ -349,7 +349,7 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
-      - ./exporter/node-exporter_south:/etc/node-exporter:ro
+      - ./node-exporter_south:/etc/node-exporter:ro
     command:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
@@ -368,7 +368,7 @@ services:
     ports:
       - "9183:80"
     volumes:
-      - ./exporter/windows-metrics:/usr/share/nginx/html
+      - ./windows-metrics:/usr/share/nginx/html
     restart: unless-stopped
     networks:
       - monitoring
@@ -379,7 +379,7 @@ services:
     ports:
       - "9257:9256"
     volumes:
-      - ./exporter/process-exporter_south/config.yml:/config/config.yml:ro
+      - ./process-exporter_south/config.yml:/config/config.yml:ro
       - /proc:/host/proc:ro
     command:
       - '--config.path=/config/config.yml'
@@ -524,7 +524,7 @@ services:
     ports:
       - "6082:80"
     volumes:
-      - ./exporter/windows-metrics:/usr/share/nginx/html
+      - ./windows-metrics:/usr/share/nginx/html
     restart: unless-stopped
     networks:
       - monitoring
@@ -538,7 +538,7 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
-      - ./exporter/node-exporter_test:/etc/node-exporter:ro
+      - ./node-exporter_test:/etc/node-exporter:ro
     command:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
@@ -557,7 +557,7 @@ services:
     ports:
       - "9184:80"
     volumes:
-      - ./exporter/windows-metrics:/usr/share/nginx/html
+      - ./windows-metrics:/usr/share/nginx/html
     restart: unless-stopped
     networks:
       - monitoring
@@ -568,7 +568,7 @@ services:
     ports:
       - "9258:9256"
     volumes:
-      - ./exporter/process-exporter_test/config.yml:/config/config.yml:ro
+      - ./process-exporter_test/config.yml:/config/config.yml:ro
       - /proc:/host/proc:ro
     command:
       - '--config.path=/config/config.yml'

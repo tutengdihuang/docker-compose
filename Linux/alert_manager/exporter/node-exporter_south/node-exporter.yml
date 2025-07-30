@@ -1,0 +1,68 @@
+# Node Exporter Configuration for South Environment
+# 南中心环境 node-exporter 配置
+
+# 启用的收集器列表
+collectors:
+  enabled:
+    - cpu
+    - diskstats
+    - filesystem
+    - loadavg
+    - meminfo
+    - netdev
+    - netstat
+    - stat
+    - time
+    - uname
+    - vmstat
+    - processes  # 进程统计
+    - interrupts
+    - arp
+    - conntrack
+    - entropy
+    - filefd
+    - hwmon
+    - infiniband
+    - ipvs
+    - mdadm
+    - nfs
+    - nfsd
+    - sockstat
+    - textfile
+    - thermal_zone
+    - udp_queues
+    - xfs
+    - zfs
+
+# 禁用的收集器
+  disabled:
+    - wifi
+    - powersupplyclass
+
+# 文件系统挂载点过滤器
+filesystem:
+  mount-points-exclude: "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+  fs-types-exclude: "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$$"
+
+# 网络设备过滤器
+netdev:
+  device-exclude: "^(veth.*|docker.*|br-.*|lo)$$"
+
+# 进程收集器配置
+processes:
+  # 是否收集进程信息
+  enable: true
+  # 进程名称正则表达式过滤器
+  name-filter: ".*"
+
+# 文本文件收集器配置 (用于自定义指标)
+textfile:
+  directory: "/var/lib/node-exporter/textfile"
+
+# 环境标识
+environment:
+  name: "南中心"
+  env: "生产"
+  cluster: "南中心"
+  region: "south"
+  datacenter: "shenzhen"
