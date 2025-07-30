@@ -1,15 +1,18 @@
 version: '3.8'
 
 services:
-  prometheus:
+  # ================================
+  # NORTH Environment (8500, 9090+)
+  # ================================
+  prometheus-north:
     image: prom/prometheus:latest
-    container_name: prometheus
+    container_name: prometheus-north
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
-      - prometheus_data:/prometheus
+      - ./prometheus_north/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_north/alert.rules.yml:/etc/prometheus/alert.rules.yml
+      - prometheus_data_north:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -23,17 +26,17 @@ services:
     networks:
       - monitoring
 
-  thanos-sidecar:
+  thanos-sidecar-north:
     image: quay.io/thanos/thanos:v0.32.5
-    container_name: thanos-sidecar
+    container_name: thanos-sidecar-north
     command:
       - 'sidecar'
       - '--tsdb.path=/prometheus'
-      - '--prometheus.url=http://prometheus:9090'
+      - '--prometheus.url=http://prometheus-north:9090'
       - '--grpc-address=0.0.0.0:10901'
       - '--http-address=0.0.0.0:10902'
     volumes:
-      - prometheus_data:/prometheus
+      - prometheus_data_north:/prometheus
     ports:
       - "10902:10902"
       - "10901:10901"
@@ -41,14 +44,14 @@ services:
     networks:
       - monitoring
     depends_on:
-      - prometheus
+      - prometheus-north
 
-  thanos-query:
+  thanos-query-north:
     image: quay.io/thanos/thanos:v0.32.5
-    container_name: thanos-query
+    container_name: thanos-query-north
     command:
       - 'query'
-      - '--endpoint=thanos-sidecar:10901'
+      - '--endpoint=thanos-sidecar-north:10901'
       - '--http-address=0.0.0.0:10903'
       - '--grpc-address=0.0.0.0:10911'
       - '--web.external-prefix=/'
@@ -60,19 +63,17 @@ services:
     networks:
       - monitoring
     depends_on:
-      - thanos-sidecar
+      - thanos-sidecar-north
 
-  # Consul service
-  consul:
+  consul-north:
     image: consul:1.15.4
-    container_name: consul
+    container_name: consul-north
     ports:
       - "8500:8500"
       - "8600:8600/udp"
-      - "8502:8502"
     volumes:
-      - ./consul_config/consul.json:/consul/config/consul.json
-      - consul_data:/consul/data
+      - ./consul_config_north/consul.json:/consul/config/consul.json
+      - consul_data_north:/consul/data
     command: 'agent -config-file=/consul/config/consul.json'
     environment:
       - CONSUL_BIND_INTERFACE=eth0
@@ -86,12 +87,11 @@ services:
       retries: 5
       start_period: 30s
 
-  # Consul服务初始化
-  consul-init:
+  consul-init-north:
     image: alpine:latest
-    container_name: consul-init
+    container_name: consul-init-north
     volumes:
-      - ./consul_config/init_services.sh:/src/init_services.sh:ro
+      - ./consul_config_north/init_services.sh:/src/init_services.sh:ro
     command: >
       sh -c "
         apk add --no-cache curl bash &&
@@ -102,19 +102,19 @@ services:
     networks:
       - monitoring
     depends_on:
-      consul:
+      consul-north:
         condition: service_healthy
-      prometheus:
+      prometheus-north:
         condition: service_started
-      windows-exporter:
+      windows-exporter-north:
         condition: service_started
-      node-exporter:
+      node-exporter-north:
         condition: service_started
     restart: "no"
 
-  alertmanager:
+  alertmanager-north:
     image: prom/alertmanager:latest
-    container_name: alertmanager
+    container_name: alertmanager-north
     ports:
       - "9093:9093"
     environment:
@@ -128,9 +128,9 @@ services:
     networks:
       - monitoring
 
-  windows-exporter:
+  windows-exporter-north:
     image: nginx:alpine
-    container_name: windows-exporter
+    container_name: windows-exporter-north
     ports:
       - "6080:80"
     volumes:
@@ -139,10 +139,9 @@ services:
     networks:
       - monitoring
 
-  # Node Exporter - 监控Linux系统指标 (端口9100)
-  node-exporter:
+  node-exporter-north:
     image: prom/node-exporter:latest
-    container_name: node-exporter
+    container_name: node-exporter-north
     ports:
       - "9100:9100"
     volumes:
@@ -157,10 +156,9 @@ services:
     networks:
       - monitoring
 
-  # 模拟Windows Exporter - 使用nginx提供metrics接口 (端口9182)
-  windows-exporter-mock:
+  windows-exporter-mock-north:
     image: nginx:alpine
-    container_name: windows-exporter-mock
+    container_name: windows-exporter-mock-north
     ports:
       - "9182:80"
     volumes:
@@ -169,9 +167,347 @@ services:
     networks:
       - monitoring
 
+  # ================================
+  # SOUTH Environment (8501, 9091+)
+  # ================================
+  prometheus-south:
+    image: prom/prometheus:latest
+    container_name: prometheus-south
+    ports:
+      - "9091:9091"
+    volumes:
+      - ./prometheus_south/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_south/alert.rules.yml:/etc/prometheus/alert.rules.yml
+      - prometheus_data_south:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=2h'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--storage.tsdb.max-block-duration=2h'
+      - '--storage.tsdb.min-block-duration=2h'
+      - '--web.enable-lifecycle'
+      - '--web.listen-address=0.0.0.0:9091'
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  thanos-sidecar-south:
+    image: quay.io/thanos/thanos:v0.32.5
+    container_name: thanos-sidecar-south
+    command:
+      - 'sidecar'
+      - '--tsdb.path=/prometheus'
+      - '--prometheus.url=http://prometheus-south:9091'
+      - '--grpc-address=0.0.0.0:10901'
+      - '--http-address=0.0.0.0:10902'
+    volumes:
+      - prometheus_data_south:/prometheus
+    ports:
+      - "10907:10902"
+      - "10906:10901"
+    restart: unless-stopped
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus-south
+
+  thanos-query-south:
+    image: quay.io/thanos/thanos:v0.32.5
+    container_name: thanos-query-south
+    command:
+      - 'query'
+      - '--endpoint=thanos-sidecar-south:10901'
+      - '--http-address=0.0.0.0:10903'
+      - '--grpc-address=0.0.0.0:10911'
+      - '--web.external-prefix=/'
+      - '--web.prefix-header=X-Forwarded-Prefix,/'
+    ports:
+      - "10904:10903"
+      - "10913:10911"
+    restart: unless-stopped
+    networks:
+      - monitoring
+    depends_on:
+      - thanos-sidecar-south
+
+  consul-south:
+    image: consul:1.15.4
+    container_name: consul-south
+    ports:
+      - "8501:8501"
+      - "8601:8600/udp"
+    volumes:
+      - ./consul_config_south/consul.json:/consul/config/consul.json
+      - consul_data_south:/consul/data
+    command: 'agent -config-file=/consul/config/consul.json'
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/v1/status/leader"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  consul-init-south:
+    image: alpine:latest
+    container_name: consul-init-south
+    volumes:
+      - ./consul_config_south/init_services.sh:/src/init_services.sh:ro
+    command: >
+      sh -c "
+        apk add --no-cache curl bash &&
+        cp /src/init_services.sh /tmp/init_services.sh &&
+        chmod +x /tmp/init_services.sh &&
+        /tmp/init_services.sh
+      "
+    networks:
+      - monitoring
+    depends_on:
+      consul-south:
+        condition: service_healthy
+      prometheus-south:
+        condition: service_started
+      windows-exporter-south:
+        condition: service_started
+      node-exporter-south:
+        condition: service_started
+    restart: "no"
+
+  alertmanager-south:
+    image: prom/alertmanager:latest
+    container_name: alertmanager-south
+    ports:
+      - "9094:9093"
+    environment:
+      - ALERTMANAGER_AUTH_TOKEN=your_secure_token_here
+    volumes:
+      - ./alertmanager/config.yml:/etc/alertmanager/config.yml
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  windows-exporter-south:
+    image: nginx:alpine
+    container_name: windows-exporter-south
+    ports:
+      - "6081:80"
+    volumes:
+      - ./windows-metrics:/usr/share/nginx/html
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  node-exporter-south:
+    image: prom/node-exporter:latest
+    container_name: node-exporter-south
+    ports:
+      - "9101:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  windows-exporter-mock-south:
+    image: nginx:alpine
+    container_name: windows-exporter-mock-south
+    ports:
+      - "9183:80"
+    volumes:
+      - ./windows-metrics:/usr/share/nginx/html
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  # ================================
+  # TEST Environment (8502, 9092+)
+  # ================================
+  prometheus-test:
+    image: prom/prometheus:latest
+    container_name: prometheus-test
+    ports:
+      - "9092:9092"
+    volumes:
+      - ./prometheus_test/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_test/alert.rules.yml:/etc/prometheus/alert.rules.yml
+      - prometheus_data_test:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=2h'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--storage.tsdb.max-block-duration=2h'
+      - '--storage.tsdb.min-block-duration=2h'
+      - '--web.enable-lifecycle'
+      - '--web.listen-address=0.0.0.0:9092'
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  thanos-sidecar-test:
+    image: quay.io/thanos/thanos:v0.32.5
+    container_name: thanos-sidecar-test
+    command:
+      - 'sidecar'
+      - '--tsdb.path=/prometheus'
+      - '--prometheus.url=http://prometheus-test:9092'
+      - '--grpc-address=0.0.0.0:10901'
+      - '--http-address=0.0.0.0:10902'
+    volumes:
+      - prometheus_data_test:/prometheus
+    ports:
+      - "10909:10902"
+      - "10910:10901"
+    restart: unless-stopped
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus-test
+
+  thanos-query-test:
+    image: quay.io/thanos/thanos:v0.32.5
+    container_name: thanos-query-test
+    command:
+      - 'query'
+      - '--endpoint=thanos-sidecar-test:10901'
+      - '--http-address=0.0.0.0:10903'
+      - '--grpc-address=0.0.0.0:10911'
+      - '--web.external-prefix=/'
+      - '--web.prefix-header=X-Forwarded-Prefix,/'
+    ports:
+      - "10905:10903"
+      - "10919:10911"
+    restart: unless-stopped
+    networks:
+      - monitoring
+    depends_on:
+      - thanos-sidecar-test
+
+  consul-test:
+    image: consul:1.15.4
+    container_name: consul-test
+    ports:
+      - "8502:8502"
+      - "8602:8600/udp"
+    volumes:
+      - ./consul_config_test/consul.json:/consul/config/consul.json
+      - consul_data_test:/consul/data
+    command: 'agent -config-file=/consul/config/consul.json'
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8502/v1/status/leader"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  consul-init-test:
+    image: alpine:latest
+    container_name: consul-init-test
+    volumes:
+      - ./consul_config_test/init_services.sh:/src/init_services.sh:ro
+    command: >
+      sh -c "
+        apk add --no-cache curl bash &&
+        cp /src/init_services.sh /tmp/init_services.sh &&
+        chmod +x /tmp/init_services.sh &&
+        /tmp/init_services.sh
+      "
+    networks:
+      - monitoring
+    depends_on:
+      consul-test:
+        condition: service_healthy
+      prometheus-test:
+        condition: service_started
+      windows-exporter-test:
+        condition: service_started
+      node-exporter-test:
+        condition: service_started
+    restart: "no"
+
+  alertmanager-test:
+    image: prom/alertmanager:latest
+    container_name: alertmanager-test
+    ports:
+      - "9095:9093"
+    environment:
+      - ALERTMANAGER_AUTH_TOKEN=your_secure_token_here
+    volumes:
+      - ./alertmanager/config.yml:/etc/alertmanager/config.yml
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  windows-exporter-test:
+    image: nginx:alpine
+    container_name: windows-exporter-test
+    ports:
+      - "6082:80"
+    volumes:
+      - ./windows-metrics:/usr/share/nginx/html
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  node-exporter-test:
+    image: prom/node-exporter:latest
+    container_name: node-exporter-test
+    ports:
+      - "9102:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  windows-exporter-mock-test:
+    image: nginx:alpine
+    container_name: windows-exporter-mock-test
+    ports:
+      - "9184:80"
+    volumes:
+      - ./windows-metrics:/usr/share/nginx/html
+    restart: unless-stopped
+    networks:
+      - monitoring
+
 volumes:
-  prometheus_data:
-  consul_data:
+  prometheus_data_north:
+  prometheus_data_south:
+  prometheus_data_test:
+  consul_data_north:
+  consul_data_south:
+  consul_data_test:
 
 networks:
   monitoring:

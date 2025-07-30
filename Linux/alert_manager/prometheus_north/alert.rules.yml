@@ -1,0 +1,29 @@
+groups:
+- name: container_alerts
+  rules:
+  - alert: HighCPUUsage
+    expr: rate(container_cpu_usage_seconds_total{name!=""}[1m]) > 0.8
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: High CPU usage on {{ $labels.name }}
+      description: Container {{ $labels.name }} CPU usage is above 80% for more than 5 minutes
+
+  - alert: HighMemoryUsage
+    expr: container_memory_usage_bytes{name!=""} / container_spec_memory_limit_bytes{name!=""} * 100 > 80
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: High memory usage on {{ $labels.name }}
+      description: Container {{ $labels.name }} memory usage is above 80% for more than 5 minutes
+
+  - alert: ContainerDown
+    expr: absent(container_last_seen{name!=""})
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: Container {{ $labels.name }} down
+      description: Container {{ $labels.name }} has been down for more than 5 minutes

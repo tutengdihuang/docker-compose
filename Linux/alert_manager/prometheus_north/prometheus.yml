@@ -1,0 +1,115 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: prometheus-north
+    replica: 0
+
+scrape_configs:
+  - job_name: 'prometheus'
+    consul_sd_configs:
+      - server: 'consul-north:8500'
+        services: ['prometheus']
+    relabel_configs:
+      - source_labels: [__meta_consul_tags]
+        regex: '.*app=([^,]*).*'
+        target_label: app
+      - source_labels: [__meta_consul_tags]
+        regex: '.*area=([^,]*).*'
+        target_label: area
+      - source_labels: [__meta_consul_tags]
+        regex: '.*biz=([^,]*).*'
+        target_label: biz
+      - source_labels: [__meta_consul_tags]
+        regex: '.*cluster=([^,]*).*'
+        target_label: cluster
+      - source_labels: [__meta_consul_tags]
+        regex: '.*env=([^,]*).*'
+        target_label: env
+      - source_labels: [__meta_consul_tags]
+        regex: '.*instance=([^,]*).*'
+        target_label: instance
+      - source_labels: [__meta_consul_tags]
+        regex: '.*job=([^,]*).*'
+        target_label: job
+      - source_labels: [__meta_consul_tags]
+        regex: '.*replica=([^,]*).*'
+        target_label: replica
+      - source_labels: [__meta_consul_tags]
+        regex: '.*support=([^,]*).*'
+        target_label: support
+      - source_labels: [__meta_consul_tags]
+        regex: '.*tmp_hash=([^,]*).*'
+        target_label: tmp_hash
+
+  - job_name: 'windows'
+    consul_sd_configs:
+      - server: 'consul-north:8500'
+        services: ['windows-exporter']
+    relabel_configs:
+      - source_labels: [__meta_consul_tags]
+        regex: '.*app=([^,]*).*'
+        target_label: app
+      - source_labels: [__meta_consul_tags]
+        regex: '.*area=([^,]*).*'
+        target_label: area
+      - source_labels: [__meta_consul_tags]
+        regex: '.*biz=([^,]*).*'
+        target_label: biz
+      - source_labels: [__meta_consul_tags]
+        regex: '.*cluster=([^,]*).*'
+        target_label: cluster
+      - source_labels: [__meta_consul_tags]
+        regex: '.*env=([^,]*).*'
+        target_label: env
+      - source_labels: [__meta_consul_tags]
+        regex: '.*instance=([^,]*).*'
+        target_label: instance
+      - source_labels: [__meta_consul_tags]
+        regex: '.*job=([^,]*).*'
+        target_label: job
+      - source_labels: [__meta_consul_tags]
+        regex: '.*replica=([^,]*).*'
+        target_label: replica
+      - source_labels: [__meta_consul_tags]
+        regex: '.*support=([^,]*).*'
+        target_label: support
+      - source_labels: [__meta_consul_tags]
+        regex: '.*tmp_hash=([^,]*).*'
+        target_label: tmp_hash
+
+  - job_name: 'node'
+    consul_sd_configs:
+      - server: 'consul-north:8500'
+        services: ['node-exporter']
+    relabel_configs:
+      - source_labels: [__meta_consul_tags]
+        regex: '.*app=([^,]*).*'
+        target_label: app
+      - source_labels: [__meta_consul_tags]
+        regex: '.*area=([^,]*).*'
+        target_label: area
+      - source_labels: [__meta_consul_tags]
+        regex: '.*biz=([^,]*).*'
+        target_label: biz
+      - source_labels: [__meta_consul_tags]
+        regex: '.*cluster=([^,]*).*'
+        target_label: cluster
+      - source_labels: [__meta_consul_tags]
+        regex: '.*env=([^,]*).*'
+        target_label: env
+      - source_labels: [__meta_consul_tags]
+        regex: '.*instance=([^,]*).*'
+        target_label: instance
+      - source_labels: [__meta_consul_tags]
+        regex: '.*job=([^,]*).*'
+        target_label: job
+      - source_labels: [__meta_consul_tags]
+        regex: '.*replica=([^,]*).*'
+        target_label: replica
+      - source_labels: [__meta_consul_tags]
+        regex: '.*support=([^,]*).*'
+        target_label: support
+      - source_labels: [__meta_consul_tags]
+        regex: '.*tmp_hash=([^,]*).*'
+        target_label: tmp_hash

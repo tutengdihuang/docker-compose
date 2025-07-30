@@ -1,0 +1,28 @@
+{
+  "datacenter": "dc1",
+  "data_dir": "/consul/data",
+  "log_level": "INFO",
+  "node_name": "consul-server-test",
+  "server": true,
+  "bootstrap_expect": 1,
+  "ui_config": {
+    "enabled": true
+  },
+  "addresses": {
+    "http": "0.0.0.0",
+    "dns": "0.0.0.0",
+    "grpc": "0.0.0.0"
+  },
+  "client_addr": "0.0.0.0",
+  "bind_addr": "0.0.0.0",
+  "ports": {
+    "dns": 8600,
+    "http": 8502,
+    "https": -1,
+    "grpc": 8506
+  },
+  "connect": {
+    "enabled": true
+  },
+  "recursors": ["8.8.8.8", "8.8.4.4"]
+} 
