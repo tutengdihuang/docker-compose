@@ -3,7 +3,7 @@
 # Consul 服务初始化脚本
 # 在 Consul 启动后自动注册默认服务
 
-CONSUL_URL="http://localhost:8500"
+CONSUL_URL="${CONSUL_URL:-http://consul:8500}"
 MAX_RETRIES=30
 RETRY_INTERVAL=2
 
@@ -65,8 +65,8 @@ register_windows_exporter() {
     curl -X PUT --data '{
         "Name": "windows-exporter",
         "ID": "windows-exporter-192.168.100.200-9182",
-        "Address": "192.168.100.200",
-        "Port": 9182,
+        "Address": "windows-exporter",
+        "Port": 80,
         "Tags": [
             "app=prod1",
             "area=全国",
@@ -80,7 +80,7 @@ register_windows_exporter() {
             "tmp_hash=1"
         ],
         "Check": {
-            "HTTP": "http://192.168.100.200:9182/metrics",
+            "HTTP": "http://windows-exporter:80/metrics",
             "Interval": "10s",
             "Timeout": "5s"
         }

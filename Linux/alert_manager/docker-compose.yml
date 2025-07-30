@@ -62,23 +62,55 @@ services:
     depends_on:
       - thanos-sidecar
 
-  # Consul service commented out since it's running on the host machine
-  # consul:
-  #   image: consul:latest
-  #   container_name: consul
-  #   ports:
-  #     - "8500:8500"
-  #     - "8600:8600/udp"
-  #     - "8502:8502"
-  #   volumes:
-  #     - ./consul_config/consul.json:/consul/config/consul.json
-  #     - consul_data:/consul/data
-  #   command: 'agent -config-file=/consul/config/consul.json'
-  #   environment:
-  #     - CONSUL_BIND_INTERFACE=eth0
-  #   networks:
-  #     - monitoring
-  #   restart: unless-stopped
+  # Consul service
+  consul:
+    image: consul:1.15.4
+    container_name: consul
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+      - "8502:8502"
+    volumes:
+      - ./consul_config/consul.json:/consul/config/consul.json
+      - consul_data:/consul/data
+    command: 'agent -config-file=/consul/config/consul.json'
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8500/v1/status/leader"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Consul服务初始化
+  consul-init:
+    image: alpine:latest
+    container_name: consul-init
+    volumes:
+      - ./consul_config/init_services.sh:/src/init_services.sh:ro
+    command: >
+      sh -c "
+        apk add --no-cache curl bash &&
+        cp /src/init_services.sh /tmp/init_services.sh &&
+        chmod +x /tmp/init_services.sh &&
+        /tmp/init_services.sh
+      "
+    networks:
+      - monitoring
+    depends_on:
+      consul:
+        condition: service_healthy
+      prometheus:
+        condition: service_started
+      windows-exporter:
+        condition: service_started
+      node-exporter:
+        condition: service_started
+    restart: "no"
 
   alertmanager:
     image: prom/alertmanager:latest
@@ -96,19 +128,43 @@ services:
     networks:
       - monitoring
 
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
-    container_name: cadvisor
+  windows-exporter:
+    image: nginx:alpine
+    container_name: windows-exporter
     ports:
-      - "8080:8080"
+      - "6080:80"
     volumes:
+      - ./windows-metrics:/usr/share/nginx/html
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  # Node Exporter - 监控Linux系统指标 (端口9100)
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
       - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
-    devices:
-      - /dev/kmsg
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  # 模拟Windows Exporter - 使用nginx提供metrics接口 (端口9182)
+  windows-exporter-mock:
+    image: nginx:alpine
+    container_name: windows-exporter-mock
+    ports:
+      - "9182:80"
+    volumes:
+      - ./windows-metrics:/usr/share/nginx/html
     restart: unless-stopped
     networks:
       - monitoring
@@ -120,3 +176,5 @@ volumes:
 networks:
   monitoring:
     driver: bridge
+
+    

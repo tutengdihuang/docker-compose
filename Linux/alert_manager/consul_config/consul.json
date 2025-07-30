@@ -8,9 +8,13 @@
   "ui_config": {
     "enabled": true
   },
+  "addresses": {
+    "http": "0.0.0.0",
+    "dns": "0.0.0.0",
+    "grpc": "0.0.0.0"
+  },
   "client_addr": "0.0.0.0",
   "bind_addr": "0.0.0.0",
-  "advertise_addr": "consul",
   "ports": {
     "dns": 8600,
     "http": 8500,

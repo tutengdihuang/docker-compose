@@ -1,0 +1,28 @@
+process_names:
+  - name: "{{.Comm}}"
+    cmdline:
+    - '.+'
+
+  - name: "dockerd"
+    cmdline:
+    - 'dockerd'
+
+  - name: "docker-proxy"
+    cmdline:
+    - 'docker-proxy'
+
+  - name: "containerd"
+    cmdline:
+    - 'containerd'
+
+  - name: "prometheus"
+    cmdline:
+    - 'prometheus'
+
+  - name: "consul"
+    cmdline:
+    - 'consul'
+
+  - name: "alertmanager"
+    cmdline:
+    - 'alertmanager'

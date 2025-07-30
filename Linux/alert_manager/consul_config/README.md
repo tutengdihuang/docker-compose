@@ -5,26 +5,14 @@
 ## 文件说明
 
 - `consul.json` - Consul 主配置文件
-- `register_service.sh` - 单个服务注册脚本
-- `batch_register.sh` - 批量服务注册脚本
-- `example_services.json` - 示例服务配置文件
+- `init_services.sh` - 服务初始化脚本
 - `README.md` - 本说明文件
 
 ## 快速开始
 
 ### 1. 启动服务
 
-#### 方式一：使用启动脚本（推荐）
-
-```bash
-# 进入 alert_manager 目录
-cd Linux/alert_manager
-
-# 一键启动 Consul 并初始化服务
-./start_consul.sh
-```
-
-#### 方式二：使用 Docker Compose
+#### 方式一：使用 Docker Compose（推荐）
 
 ```bash
 # 进入 alert_manager 目录
@@ -32,13 +20,16 @@ cd Linux/alert_manager
 
 # 启动所有服务
 docker-compose up -d
+
+# 初始化 Consul 服务
+./consul_config/init_services.sh
 ```
 
-#### 方式三：手动启动
+#### 方式二：手动启动
 
 ```bash
-# 启动 Consul
-consul agent -dev -ui -client=0.0.0.0 &
+# 启动 Consul 容器
+docker-compose up -d consul
 
 # 等待服务启动后运行初始化脚本
 ./consul_config/init_services.sh
@@ -48,48 +39,42 @@ consul agent -dev -ui -client=0.0.0.0 &
 
 ```bash
 # 检查 Consul 服务
-curl http://192.168.100.200:8500/v1/status/leader
+curl http://localhost:8500/v1/status/leader
 
 # 查看已注册的服务
-curl http://192.168.100.200:8500/v1/agent/services
+curl http://localhost:8500/v1/agent/services
 
 # 访问 Consul UI
-# 浏览器打开: http://192.168.100.200:8500
+# 浏览器打开: http://localhost:8500
 ```
 
 ### 3. 注册服务
 
 #### 自动初始化（推荐）
 
-启动脚本会自动注册默认服务，包括：
+init_services.sh 脚本会自动注册当前部署的服务，包括：
 - Prometheus
 - Windows Exporter  
 - Node Exporter
-- MySQL Exporter
-- Redis Exporter
 
 #### 手动注册服务
 
-##### 单个服务注册
+##### 手动注册单个服务
 
 ```bash
-# 注册 Windows Exporter
-./consul_config/register_service.sh \
-  windows-exporter \
-  windows-exporter-192.168.100.200-9182 \
-  192.168.100.200 \
-  9182 \
-  '["app=None","area=全国","biz=基础环境智能监控平台windows","cluster=北中心","env=生产","instance=192.168.100.200","job=linux_prod","replica=0","support=v1","tmp_hash=1"]'
-```
-
-##### 批量服务注册
-
-```bash
-# 使用默认配置文件
-./consul_config/batch_register.sh
-
-# 使用自定义配置文件
-./consul_config/batch_register.sh my_services.json
+# 使用 Consul API 注册服务
+curl -X PUT --data '{
+  "Name": "service-name",
+  "ID": "service-id",
+  "Address": "service-address",
+  "Port": 9999,
+  "Tags": ["tag1", "tag2"],
+  "Check": {
+    "HTTP": "http://service-address:9999/metrics",
+    "Interval": "10s",
+    "Timeout": "5s"
+  }
+}' http://localhost:8500/v1/agent/service/register
 ```
 
 ##### 重新初始化所有服务
@@ -101,10 +86,11 @@ curl http://192.168.100.200:8500/v1/agent/services
 
 ### 4. 查看监控数据
 
-- **Prometheus**: http://192.168.100.200:9090
-- **Thanos Query**: http://192.168.100.200:10903
-- **AlertManager**: http://192.168.100.200:9093
-- **cAdvisor**: http://192.168.100.200:8080
+- **Prometheus**: http://localhost:9090
+- **Thanos Query**: http://localhost:10903
+- **AlertManager**: http://localhost:9093
+- **Windows Exporter**: http://localhost:6080
+- **Node Exporter**: http://localhost:9100
 
 ## 服务发现流程
 
@@ -146,10 +132,10 @@ netstat -tlnp | grep 8500
 
 ```bash
 # 检查目标服务是否可访问
-curl http://192.168.100.200:9182/metrics
+curl http://localhost:6080/metrics
 
 # 检查 Consul 服务状态
-curl http://192.168.100.200:8500/v1/status/leader
+curl http://localhost:8500/v1/status/leader
 ```
 
 ### Prometheus 无法发现服务
@@ -162,21 +148,21 @@ docker exec prometheus cat /etc/prometheus/prometheus.yml
 docker logs prometheus
 
 # 检查服务发现状态
-curl http://192.168.100.200:9090/api/v1/targets
+curl http://localhost:9090/api/v1/targets
 ```
 
 ## 常用命令
 
 ```bash
 # 查看所有注册的服务
-curl http://192.168.100.200:8500/v1/agent/services
+curl http://localhost:8500/v1/agent/services
 
 # 取消注册服务
-curl -X PUT http://192.168.100.200:8500/v1/agent/service/deregister/SERVICE_ID
+curl -X PUT http://localhost:8500/v1/agent/service/deregister/SERVICE_ID
 
 # 查看服务健康状态
-curl http://192.168.100.200:8500/v1/health/service/SERVICE_NAME
+curl http://localhost:8500/v1/health/service/SERVICE_NAME
 
 # 重新加载 Prometheus 配置
-curl -X POST http://192.168.100.200:9090/-/reload
+curl -X POST http://localhost:9090/-/reload
 ``` 

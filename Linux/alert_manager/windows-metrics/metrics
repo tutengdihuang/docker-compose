@@ -1,0 +1,25 @@
+# HELP windows_cpu_time_total Total seconds that processor spent in different modes (idle, user, system, ...)
+# TYPE windows_cpu_time_total counter
+windows_cpu_time_total{core="0",mode="idle"} 1234567.89
+windows_cpu_time_total{core="0",mode="user"} 123456.78
+windows_cpu_time_total{core="0",mode="system"} 12345.67
+
+# HELP windows_memory_available_bytes Available bytes of memory
+# TYPE windows_memory_available_bytes gauge
+windows_memory_available_bytes 8589934592
+
+# HELP windows_memory_cache_bytes Cache bytes of memory
+# TYPE windows_memory_cache_bytes gauge
+windows_memory_cache_bytes 1073741824
+
+# HELP windows_logical_disk_free_bytes Free space in bytes
+# TYPE windows_logical_disk_free_bytes gauge
+windows_logical_disk_free_bytes{volume="C:"} 107374182400
+
+# HELP windows_logical_disk_size_bytes Total space in bytes
+# TYPE windows_logical_disk_size_bytes gauge
+windows_logical_disk_size_bytes{volume="C:"} 214748364800
+
+# HELP windows_system_system_up_time System uptime
+# TYPE windows_system_system_up_time gauge
+windows_system_system_up_time 86400
