@@ -5,7 +5,7 @@ services:
   # NORTH Environment (8500, 9090+)
   # ================================
   prometheus-north:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.5.0
     container_name: prometheus-north
     ports:
       - "9090:9090"
@@ -94,7 +94,7 @@ services:
       start_period: 30s
 
   consul-init-north:
-    image: alpine:latest
+    image: alpine:3.22.1
     container_name: consul-init-north
     volumes:
       - ./consul_config_north/init_services.sh:/src/init_services.sh:ro
@@ -119,7 +119,7 @@ services:
     restart: "no"
 
   alertmanager-north:
-    image: prom/alertmanager:latest
+    image: prom/alertmanager:v0.28.1
     container_name: alertmanager-north
     ports:
       - "9093:9093"
@@ -135,7 +135,7 @@ services:
       - monitoring
 
   windows-exporter-north:
-    image: nginx:alpine
+    image: nginx:1.29.0-alpine
     container_name: windows-exporter-north
     ports:
       - "6080:80"
@@ -146,7 +146,7 @@ services:
       - monitoring
 
   node-exporter-north:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.9.1
     container_name: node-exporter-north
     ports:
       - "9100:9100"
@@ -174,7 +174,7 @@ services:
       start_period: 10s
 
   windows-exporter-mock-north:
-    image: nginx:alpine
+    image: nginx:1.29.0-alpine
     container_name: windows-exporter-mock-north
     ports:
       - "9182:80"
@@ -185,7 +185,7 @@ services:
       - monitoring
 
   process-exporter-north:
-    image: ncabatoff/process-exporter:latest
+    image: ncabatoff/process-exporter:v0.13.0
     container_name: process-exporter-north
     ports:
       - "9256:9256"
@@ -205,7 +205,7 @@ services:
   # SOUTH Environment (8501, 9091+)
   # ================================
   prometheus-south:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.5.0
     container_name: prometheus-south
     ports:
       - "9091:9091"
@@ -289,7 +289,7 @@ services:
       start_period: 30s
 
   consul-init-south:
-    image: alpine:latest
+    image: alpine:3.22.1
     container_name: consul-init-south
     volumes:
       - ./consul_config_south/init_services.sh:/src/init_services.sh:ro
@@ -314,7 +314,7 @@ services:
     restart: "no"
 
   alertmanager-south:
-    image: prom/alertmanager:latest
+    image: prom/alertmanager:v0.28.1
     container_name: alertmanager-south
     ports:
       - "9094:9093"
@@ -330,7 +330,7 @@ services:
       - monitoring
 
   windows-exporter-south:
-    image: nginx:alpine
+    image: nginx:1.29.0-alpine
     container_name: windows-exporter-south
     ports:
       - "6081:80"
@@ -341,7 +341,7 @@ services:
       - monitoring
 
   node-exporter-south:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.9.1
     container_name: node-exporter-south
     ports:
       - "9101:9100"
@@ -363,7 +363,7 @@ services:
       - monitoring
 
   windows-exporter-mock-south:
-    image: nginx:alpine
+    image: nginx:1.29.0-alpine
     container_name: windows-exporter-mock-south
     ports:
       - "9183:80"
@@ -374,7 +374,7 @@ services:
       - monitoring
 
   process-exporter-south:
-    image: ncabatoff/process-exporter:latest
+    image: ncabatoff/process-exporter:v0.13.0
     container_name: process-exporter-south
     ports:
       - "9257:9256"
@@ -394,7 +394,7 @@ services:
   # TEST Environment (8502, 9092+)
   # ================================
   prometheus-test:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.5.0
     container_name: prometheus-test
     ports:
       - "9092:9092"
@@ -478,7 +478,7 @@ services:
       start_period: 30s
 
   consul-init-test:
-    image: alpine:latest
+    image: alpine:3.22.1
     container_name: consul-init-test
     volumes:
       - ./consul_config_test/init_services.sh:/src/init_services.sh:ro
@@ -503,7 +503,7 @@ services:
     restart: "no"
 
   alertmanager-test:
-    image: prom/alertmanager:latest
+    image: prom/alertmanager:v0.28.1
     container_name: alertmanager-test
     ports:
       - "9095:9093"
@@ -519,7 +519,7 @@ services:
       - monitoring
 
   windows-exporter-test:
-    image: nginx:alpine
+    image: nginx:1.29.0-alpine
     container_name: windows-exporter-test
     ports:
       - "6082:80"
@@ -530,7 +530,7 @@ services:
       - monitoring
 
   node-exporter-test:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.9.1
     container_name: node-exporter-test
     ports:
       - "9102:9100"
@@ -552,7 +552,7 @@ services:
       - monitoring
 
   windows-exporter-mock-test:
-    image: nginx:alpine
+    image: nginx:1.29.0-alpine
     container_name: windows-exporter-mock-test
     ports:
       - "9184:80"
@@ -563,7 +563,7 @@ services:
       - monitoring
 
   process-exporter-test:
-    image: ncabatoff/process-exporter:latest
+    image: ncabatoff/process-exporter:v0.13.0
     container_name: process-exporter-test
     ports:
       - "9258:9256"
@@ -583,7 +583,7 @@ services:
   # HEALTH CHECK INIT CONTAINER
   # ================================
   health-check-init:
-    image: alpine:latest
+    image: alpine:3.22.1
     container_name: health-check-init
     volumes:
       - ./init-health-check.sh:/init-health-check.sh:ro

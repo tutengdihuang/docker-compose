@@ -31,9 +31,6 @@ scrape_configs:
         regex: '.*instance=([^,]*).*'
         target_label: instance
       - source_labels: [__meta_consul_tags]
-        regex: '.*job=([^,]*).*'
-        target_label: job
-      - source_labels: [__meta_consul_tags]
         regex: '.*replica=([^,]*).*'
         target_label: replica
       - source_labels: [__meta_consul_tags]
@@ -102,9 +99,6 @@ scrape_configs:
       - source_labels: [__meta_consul_tags]
         regex: '.*instance=([^,]*).*'
         target_label: instance
-      - source_labels: [__meta_consul_tags]
-        regex: '.*job=([^,]*).*'
-        target_label: job
       - source_labels: [__meta_consul_tags]
         regex: '.*replica=([^,]*).*'
         target_label: replica
