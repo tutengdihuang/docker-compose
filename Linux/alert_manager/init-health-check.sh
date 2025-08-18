@@ -88,10 +88,10 @@ check_service "http://node-exporter-north:9100/metrics" "North Node Exporter (91
 check_service "http://node-exporter-south:9100/metrics" "South Node Exporter (9101)" || failed_services=$((failed_services + 1))
 check_service "http://node-exporter-test:9100/metrics" "Test Node Exporter (9102)" || failed_services=$((failed_services + 1))
 
-# Process Exporter 检查
-check_service "http://process-exporter-north:9256/metrics" "North Process Exporter (9256)" || failed_services=$((failed_services + 1))
-check_service "http://process-exporter-south:9256/metrics" "South Process Exporter (9257)" || failed_services=$((failed_services + 1))
-check_service "http://process-exporter-test:9256/metrics" "Test Process Exporter (9258)" || failed_services=$((failed_services + 1))
+# Process Exporter 检查 (已禁用)
+# check_service "http://process-exporter-north:9256/metrics" "North Process Exporter (9256)" || failed_services=$((failed_services + 1))
+# check_service "http://process-exporter-south:9256/metrics" "South Process Exporter (9257)" || failed_services=$((failed_services + 1))
+# check_service "http://process-exporter-test:9256/metrics" "Test Process Exporter (9258)" || failed_services=$((failed_services + 1))
 
 # Thanos Query 检查
 check_service "http://thanos-query-north:10903/-/ready" "North Thanos Query (10903)" || failed_services=$((failed_services + 1))
