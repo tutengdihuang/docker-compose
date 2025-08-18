@@ -184,22 +184,22 @@ services:
     networks:
       - monitoring
 
-  process-exporter-north:
-    image: ncabatoff/process-exporter:v0.13.0
-    container_name: process-exporter-north
-    ports:
-      - "9256:9256"
-    volumes:
-      - ./exporter/process-exporter_north/config.yml:/config/config.yml:ro
-      - /proc:/host/proc:ro
-    command:
-      - '--config.path=/config/config.yml'
-      - '--web.listen-address=:9256'
-    privileged: true
-    pid: host
-    restart: unless-stopped
-    networks:
-      - monitoring
+#  process-exporter-north:
+#    image: ncabatoff/process-exporter:v0.13.0
+#    container_name: process-exporter-north
+#    ports:
+#      - "9256:9256"
+#    volumes:
+#      - ./exporter/process-exporter_north/config.yml:/config/config.yml:ro
+#      - /proc:/host/proc:ro
+#    command:
+#      - '--config.path=/config/config.yml'
+#      - '--web.listen-address=:9256'
+#    privileged: true
+#    pid: host
+#    restart: unless-stopped
+#    networks:
+#      - monitoring
 
   # ================================
   # SOUTH Environment (8501, 9091+)
@@ -373,22 +373,22 @@ services:
     networks:
       - monitoring
 
-  process-exporter-south:
-    image: ncabatoff/process-exporter:v0.13.0
-    container_name: process-exporter-south
-    ports:
-      - "9257:9256"
-    volumes:
-      - ./exporter/process-exporter_south/config.yml:/config/config.yml:ro
-      - /proc:/host/proc:ro
-    command:
-      - '--config.path=/config/config.yml'
-      - '--web.listen-address=:9256'
-    privileged: true
-    pid: host
-    restart: unless-stopped
-    networks:
-      - monitoring
+#  process-exporter-south:
+#    image: ncabatoff/process-exporter:v0.13.0
+#    container_name: process-exporter-south
+#    ports:
+#      - "9257:9256"
+#    volumes:
+#      - ./exporter/process-exporter_south/config.yml:/config/config.yml:ro
+#      - /proc:/host/proc:ro
+#    command:
+#      - '--config.path=/config/config.yml'
+#      - '--web.listen-address=:9256'
+#    privileged: true
+#    pid: host
+#    restart: unless-stopped
+#    networks:
+#      - monitoring
 
   # ================================
   # TEST Environment (8502, 9092+)
@@ -562,22 +562,22 @@ services:
     networks:
       - monitoring
 
-  process-exporter-test:
-    image: ncabatoff/process-exporter:v0.13.0
-    container_name: process-exporter-test
-    ports:
-      - "9258:9256"
-    volumes:
-      - ./exporter/process-exporter_test/config.yml:/config/config.yml:ro
-      - /proc:/host/proc:ro
-    command:
-      - '--config.path=/config/config.yml'
-      - '--web.listen-address=:9256'
-    privileged: true
-    pid: host
-    restart: unless-stopped
-    networks:
-      - monitoring
+#  process-exporter-test:
+#    image: ncabatoff/process-exporter:v0.13.0
+#    container_name: process-exporter-test
+#    ports:
+#      - "9258:9256"
+#    volumes:
+#      - ./exporter/process-exporter_test/config.yml:/config/config.yml:ro
+#      - /proc:/host/proc:ro
+#    command:
+#      - '--config.path=/config/config.yml'
+#      - '--web.listen-address=:9256'
+#    privileged: true
+#    pid: host
+#    restart: unless-stopped
+#    networks:
+#      - monitoring
 
   # ================================
   # HEALTH CHECK INIT CONTAINER
@@ -614,12 +614,12 @@ services:
         condition: service_started
       node-exporter-test:
         condition: service_started
-      process-exporter-north:
-        condition: service_started
-      process-exporter-south:
-        condition: service_started
-      process-exporter-test:
-        condition: service_started
+#      process-exporter-north:
+#        condition: service_started
+#      process-exporter-south:
+#        condition: service_started
+#      process-exporter-test:
+#        condition: service_started
       thanos-query-north:
         condition: service_started
       thanos-query-south:

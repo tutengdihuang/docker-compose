@@ -62,10 +62,10 @@ wait_for_service "http://node-exporter-north:9100/metrics" "North Node Exporter"
 wait_for_service "http://node-exporter-south:9100/metrics" "South Node Exporter"
 wait_for_service "http://node-exporter-test:9100/metrics" "Test Node Exporter"
 
-# 等待 Process Exporter 服务
-wait_for_service "http://process-exporter-north:9256/metrics" "North Process Exporter"
-wait_for_service "http://process-exporter-south:9256/metrics" "South Process Exporter"
-wait_for_service "http://process-exporter-test:9256/metrics" "Test Process Exporter"
+# 等待 Process Exporter 服务 (已禁用)
+# wait_for_service "http://process-exporter-north:9256/metrics" "North Process Exporter"
+# wait_for_service "http://process-exporter-south:9256/metrics" "South Process Exporter"
+# wait_for_service "http://process-exporter-test:9256/metrics" "Test Process Exporter"
 
 echo ""
 echo "=== 🔍 最终健康检查 ==="
