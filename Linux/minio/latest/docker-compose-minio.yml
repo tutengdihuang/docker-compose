@@ -13,8 +13,8 @@ services:
       TZ: Asia/Shanghai
       LANG: en_US.UTF-8
       MINIO_PROMETHEUS_AUTH_TYPE: "public"
-      MINIO_ACCESS_KEY: "root"                        # 登录账号
-      MINIO_SECRET_KEY: "password"                    # 登录密码
+      MINIO_ROOT_USER: "admin"                        # 登录账号 (新版本推荐)
+      MINIO_ROOT_PASSWORD: "minio123456"              # 登录密码 (新版本推荐)
     command: server /data  --console-address ":9001"
     logging:
       driver: "json-file"

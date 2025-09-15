@@ -1,0 +1,102 @@
+version: '3.8'
+
+volumes:
+  kafka_data:
+    driver: local
+  zookeeper_data:
+    driver: local
+
+networks:
+  kafka-scram-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.8.0/24
+
+services:
+  zookeeper:
+    image: bitnami/zookeeper:3.8
+    container_name: zookeeper-scram
+    restart: unless-stopped
+    ports:
+      - "2181:2181"
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+      ZOO_ENABLE_AUTH: "no"
+      ZOO_AUTOPURGE_INTERVAL: "1"
+      ZOO_4LW_COMMANDS_WHITELIST: "*"
+      ZOO_ENABLE_ADMIN_SERVER: "false"
+      # ZooKeeper配置 - 完全禁用认证和ACL
+      ZOO_CFG_EXTRA: "skipACL=yes"
+      # 移除所有SASL相关配置
+      # JVMFLAGS: "-Djava.security.auth.login.config=/opt/bitnami/zookeeper/conf/zookeeper_jaas.conf"
+    networks:
+      kafka-scram-network:
+        ipv4_address: 172.22.8.10
+
+  kafka:
+    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/kafka:3.4.1
+    container_name: kafka-scram
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9096:9096"
+    volumes:
+      - kafka_data:/bitnami/kafka
+      - ./kafka_jaas.conf:/opt/bitnami/kafka/config/kafka_jaas.conf
+    environment:
+      # 基本配置
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      # 使用Zookeeper模式以避免KRaft复杂性
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper-scram:2181
+      KAFKA_CFG_BROKER_ID: 1
+      # 禁用KRaft模式
+      KAFKA_ENABLE_KRAFT: "no"
+      KAFKA_CFG_NUM_NETWORK_THREADS: 3
+      KAFKA_CFG_NUM_IO_THREADS: 8
+      KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES: 102400
+      KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES: 102400
+      KAFKA_CFG_SOCKET_REQUEST_MAX_BYTES: 104857600
+      KAFKA_CFG_NUM_PARTITIONS: 1
+      KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR: 1
+      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_CFG_LOG_RETENTION_HOURS: 168
+      KAFKA_CFG_LOG_SEGMENT_BYTES: 1073741824
+      KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
+      KAFKA_CFG_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SASL_PLAINTEXT:SASL_PLAINTEXT
+      KAFKA_CFG_LISTENERS: PLAINTEXT://0.0.0.0:9096,SASL_PLAINTEXT://0.0.0.0:9092
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9096,SASL_PLAINTEXT://localhost:9092
+      # 允许PLAINTEXT监听器用于管理操作
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAINTEXT
+      KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL: PLAINTEXT
+      # SASL SCRAM配置
+      KAFKA_CFG_SASL_ENABLED_MECHANISMS: SCRAM-SHA-256
+      # 暂时禁用SCRAM配置，先让Kafka正常启动
+      # KAFKA_CFG_SUPER_USERS: "User:admin"
+      # KAFKA_OPTS: "-Djava.security.auth.login.config=/opt/bitnami/kafka/config/kafka_jaas.conf"
+    networks:
+      kafka-scram-network:
+        ipv4_address: 172.22.8.11
+
+  kafka-map:
+    image: registry.cn-hangzhou.aliyuncs.com/zhengqing/kafka-map
+    container_name: kafka-map-scram
+    restart: unless-stopped
+    depends_on:
+      - kafka
+    ports:
+      - "9008:8080"
+    environment:
+      DEFAULT_USERNAME: admin
+      DEFAULT_PASSWORD: 123456
+    volumes:
+      - "./kafka/kafka-map/data:/usr/local/kafka-map/data"
+    networks:
+      kafka-scram-network:
+        ipv4_address: 172.22.8.12

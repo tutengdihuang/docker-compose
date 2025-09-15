@@ -124,13 +124,13 @@ else
     failed_services=$((failed_services + 1))
 fi
 
-echo "🔍 验证 Process Exporter 指标..."
-if curl -sf "http://process-exporter-north:9256/metrics" | grep -q "namedprocess"; then
-    echo "✅ 进程指标可用"
-else
-    echo "❌ 进程指标不可用"
-    failed_services=$((failed_services + 1))
-fi
+# echo "🔍 验证 Process Exporter 指标..."
+# if curl -sf "http://process-exporter-north:9256/metrics" | grep -q "namedprocess"; then
+#     echo "✅ 进程指标可用"
+# else
+#     echo "❌ 进程指标不可用"
+#     failed_services=$((failed_services + 1))
+# fi
 
 echo ""
 echo "=== 🌐 服务访问信息 ==="

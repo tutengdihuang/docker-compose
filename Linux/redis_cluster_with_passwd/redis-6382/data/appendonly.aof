@@ -10,3 +10,29 @@ $4
 test
 $19
 Hello Redis Cluster
+*2
+$6
+SELECT
+$1
+0
+*3
+$3
+set
+$4
+test
+$19
+Hello Redis Cluster
+*3
+$3
+set
+$9
+user:1001
+$6
+张三
+*3
+$3
+set
+$12
+cluster_test
+$13
+cluster_value
