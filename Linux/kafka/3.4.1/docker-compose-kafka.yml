@@ -16,6 +16,7 @@ services:
     volumes:
       - "/etc/localtime:/etc/localtime"
       - "./config/kafka_jaas.conf:/opt/bitnami/kafka/config/kafka_jaas.conf:ro"
+      - "./config/client.properties:/opt/bitnami/kafka/config/client.properties:ro"
     environment:
       # 基本配置
       ALLOW_PLAINTEXT_LISTENER: "yes"
@@ -30,14 +31,19 @@ services:
       KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_CFG_INTER_BROKER_LISTENER_NAME: INTERNAL
       # SASL配置
-      KAFKA_CFG_SASL_ENABLED_MECHANISMS: SCRAM-SHA-256
-      KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL: SCRAM-SHA-256
+      KAFKA_CFG_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
       KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL: SASL_PLAINTEXT
       # JAAS配置
       KAFKA_OPTS: "-Djava.security.auth.login.config=/opt/bitnami/kafka/config/kafka_jaas.conf"
-      # SCRAM用户配置
-      KAFKA_CLIENT_USERS: "admin"
-      KAFKA_CLIENT_PASSWORDS: "Ye24_92xMG%iw@vT"
+      # 禁用 Zookeeper 用户创建（KRaft 模式）
+      KAFKA_CFG_ZOOKEEPER_CONNECT: ""
+      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      # 强制禁用 Zookeeper 相关功能
+      KAFKA_CFG_ZOOKEEPER_SESSION_TIMEOUT_MS: 0
+      KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS: 0
     ports:
       - "9092:9092"
       - "29092:29092"
