@@ -39,7 +39,7 @@ register_prometheus() {
             "cluster=南中心",
             "env=生产",
             "instance=192.168.100.200",
-            "job=linux_prod",
+            "job=linux",
             "replica=0",
             "support=v1",
             "tmp_hash=1"
@@ -74,7 +74,7 @@ register_windows_exporter() {
             "cluster=南中心",
             "env=生产",
             "instance=192.168.100.200",
-            "job=linux_prod",
+            "job=linux",
             "replica=0",
             "support=v1",
             "tmp_hash=1"
@@ -109,7 +109,7 @@ register_node_exporter() {
             "cluster=南中心",
             "env=生产",
             "instance=192.168.100.201",
-            "job=linux_prod",
+            "job=linux",
             "replica=0",
             "support=v1",
             "tmp_hash=1"

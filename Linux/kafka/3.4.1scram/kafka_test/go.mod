@@ -3,7 +3,6 @@ module kafka_test
 go 1.24.1
 
 require (
-	github.com/IBM/sarama v1.46.0
 	github.com/Shopify/sarama v1.38.1
 	github.com/xdg-go/scram v1.1.2
 )
