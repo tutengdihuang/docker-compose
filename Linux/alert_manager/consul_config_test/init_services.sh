@@ -29,17 +29,17 @@ register_prometheus() {
     echo "📊 注册 Prometheus 服务..."
     curl -X PUT --data '{
         "Name": "prometheus",
-        "ID": "prometheus-192.168.100.200-9090",
+        "ID": "prometheus-192.168.100.206-9090",
         "Address": "prometheus-test",
         "Port": 9092,
         "Tags": [
             "app=test_prometheus",
             "area=test",
-            "biz=基础环境智能监控平台prometheus",
+            "biz=基础环境智能监控平台aix",
             "cluster=测试中心",
             "env=测试",
-            "instance=192.168.100.200",
-            "job=linux_test",
+            "instance=192.168.100.206",
+            "job=aix",
             "replica=0",
             "support=v1",
             "tmp_hash=1"
@@ -64,17 +64,17 @@ register_windows_exporter() {
     echo "🪟 注册 Windows Exporter 服务..."
     curl -X PUT --data '{
         "Name": "windows-exporter",
-        "ID": "windows-exporter-192.168.100.200-9182",
+        "ID": "windows-exporter-192.168.100.207-9182",
         "Address": "windows-exporter-test",
         "Port": 80,
         "Tags": [
-            "app=test_windows",
+            "app=test_prometheus",
             "area=test",
-            "biz=基础环境智能监控平台windows",
+            "biz=基础环境智能监控平台aix",
             "cluster=测试中心",
             "env=测试",
-            "instance=192.168.100.200",
-            "job=linux_test",
+            "instance=192.168.100.207",
+            "job=aix",
             "replica=0",
             "support=v1",
             "tmp_hash=1"
@@ -99,17 +99,17 @@ register_node_exporter() {
     echo "🖥️  注册 Node Exporter 服务..."
     curl -X PUT --data '{
         "Name": "node-exporter",
-        "ID": "node-exporter-192.168.100.201-9100",
+        "ID": "node-exporter-192.168.100.208-9100",
         "Address": "node-exporter-test",
         "Port": 9100,
         "Tags": [
-            "app=test_node",
+            "app=test_prometheus",
             "area=test",
-            "biz=基础环境智能监控平台linux",
+            "biz=基础环境智能监控平台aix",
             "cluster=测试中心",
             "env=测试",
-            "instance=192.168.100.201",
-            "job=linux_test",
+            "instance=192.168.100.208",
+            "job=aix",
             "replica=0",
             "support=v1",
             "tmp_hash=1"

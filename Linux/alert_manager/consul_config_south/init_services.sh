@@ -29,17 +29,17 @@ register_prometheus() {
     echo "📊 注册 Prometheus 服务..."
     curl -X PUT --data '{
         "Name": "prometheus",
-        "ID": "prometheus-192.168.100.200-9090",
+        "ID": "prometheus-192.168.100.203-9090",
         "Address": "prometheus-south",
         "Port": 9091,
         "Tags": [
             "app=south_prometheus",
             "area=south",
-            "biz=基础环境智能监控平台prometheus",
+            "biz=基础环境智能监控平台windows",
             "cluster=南中心",
             "env=生产",
-            "instance=192.168.100.200",
-            "job=linux",
+            "instance=192.168.100.203",
+            "job=windows",
             "replica=0",
             "support=v1",
             "tmp_hash=1"
@@ -64,7 +64,7 @@ register_windows_exporter() {
     echo "🪟 注册 Windows Exporter 服务..."
     curl -X PUT --data '{
         "Name": "windows-exporter",
-        "ID": "windows-exporter-192.168.100.200-9182",
+        "ID": "windows-exporter-192.168.100.204-9182",
         "Address": "windows-exporter-south",
         "Port": 80,
         "Tags": [
@@ -73,8 +73,8 @@ register_windows_exporter() {
             "biz=基础环境智能监控平台windows",
             "cluster=南中心",
             "env=生产",
-            "instance=192.168.100.200",
-            "job=linux",
+            "instance=192.168.100.204",
+            "job=windows",
             "replica=0",
             "support=v1",
             "tmp_hash=1"
@@ -99,17 +99,17 @@ register_node_exporter() {
     echo "🖥️  注册 Node Exporter 服务..."
     curl -X PUT --data '{
         "Name": "node-exporter",
-        "ID": "node-exporter-192.168.100.201-9100",
+        "ID": "node-exporter-192.168.105.201-9100",
         "Address": "node-exporter-south",
         "Port": 9100,
         "Tags": [
             "app=south_node",
             "area=south",
-            "biz=基础环境智能监控平台linux",
+            "biz=基础环境智能监控平台windows",
             "cluster=南中心",
             "env=生产",
-            "instance=192.168.100.201",
-            "job=linux",
+            "instance=192.168.100.205",
+            "job=windows",
             "replica=0",
             "support=v1",
             "tmp_hash=1"

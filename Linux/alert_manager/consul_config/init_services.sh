@@ -29,8 +29,8 @@ register_prometheus() {
     echo "📊 注册 Prometheus 服务..."
     curl -X PUT --data '{
         "Name": "prometheus",
-        "ID": "prometheus-192.168.100.200-9090",
-        "Address": "192.168.100.200",
+        "ID": "prometheus-192.168.100.210-9090",
+        "Address": "192.168.100.210",
         "Port": 9090,
         "Tags": [
             "app=20250512",
@@ -38,14 +38,14 @@ register_prometheus() {
             "biz=基础环境智能监控平台prometheus",
             "cluster=北中心",
             "env=生产",
-            "instance=192.168.100.200",
-            "job=linux_prod",
+            "instance=192.168.100.210",
+            "job=prometheus",
             "replica=0",
             "support=v1",
             "tmp_hash=1"
         ],
         "Check": {
-            "HTTP": "http://192.168.100.200:9090/-/healthy",
+            "HTTP": "http://192.168.100.210:9090/-/healthy",
             "Interval": "10s",
             "Timeout": "5s"
         }
@@ -64,17 +64,17 @@ register_windows_exporter() {
     echo "🪟 注册 Windows Exporter 服务..."
     curl -X PUT --data '{
         "Name": "windows-exporter",
-        "ID": "windows-exporter-192.168.100.200-9182",
+        "ID": "windows-exporter-192.168.100.211-9182",
         "Address": "windows-exporter",
         "Port": 80,
         "Tags": [
             "app=prod1",
             "area=全国",
-            "biz=基础环境智能监控平台windows",
+            "biz=基础环境智能监控平台prometheus",
             "cluster=北中心",
             "env=生产",
-            "instance=192.168.100.200",
-            "job=linux_prod",
+            "instance=192.168.100.211",
+            "job=prometheus",
             "replica=0",
             "support=v1",
             "tmp_hash=1"
@@ -99,23 +99,23 @@ register_node_exporter() {
     echo "🖥️  注册 Node Exporter 服务..."
     curl -X PUT --data '{
         "Name": "node-exporter",
-        "ID": "node-exporter-192.168.100.201-9100",
-        "Address": "192.168.100.202",
+        "ID": "node-exporter-192.168.100.212-9100",
+        "Address": "192.168.100.212",
         "Port": 9100,
         "Tags": [
-            "app=app2",
+            "app=node",
             "area=全国",
-            "biz=基础环境智能监控平台linux",
+            "biz=基础环境智能监控平台prometheus",
             "cluster=北中心",
             "env=生产",
-            "instance=192.168.100.201",
-            "job=linux_test",
+            "instance=192.168.100.212",
+            "job=prometheus",
             "replica=0",
             "support=v1",
-            "tmp_hash=1"
+            "tmp_hash=2"
         ],
         "Check": {
-            "HTTP": "http://192.168.100.201:9100/metrics",
+            "HTTP": "http://192.168.100.212:9100/metrics",
             "Interval": "10s",
             "Timeout": "5s"
         }

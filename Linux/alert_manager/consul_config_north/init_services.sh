@@ -35,7 +35,7 @@ register_prometheus() {
         "Tags": [
             "app=north_prometheus",
             "area=north",
-            "biz=基础环境智能监控平台prometheus",
+            "biz=基础环境智能监控平台linux",
             "cluster=北中心",
             "env=生产",
             "instance=192.168.100.200",
@@ -64,16 +64,16 @@ register_windows_exporter() {
     echo "🪟 注册 Windows Exporter 服务..."
     curl -X PUT --data '{
         "Name": "windows-exporter",
-        "ID": "windows-exporter-192.168.100.200-9182",
+        "ID": "windows-exporter-192.168.100.201-9182",
         "Address": "windows-exporter",
         "Port": 80,
         "Tags": [
             "app=north_windows",
             "area=north",
-            "biz=基础环境智能监控平台windows",
+            "biz=基础环境智能监控平台linux",
             "cluster=北中心",
             "env=生产",
-            "instance=192.168.100.200",
+            "instance=192.168.100.201",
             "job=linux",
             "replica=0",
             "support=v1",
@@ -99,7 +99,7 @@ register_node_exporter() {
     echo "🖥️  注册 Node Exporter 服务..."
     curl -X PUT --data '{
         "Name": "node-exporter",
-        "ID": "node-exporter-192.168.100.201-9100",
+        "ID": "node-exporter-192.168.100.202-9100",
         "Address": "node-exporter-north",
         "Port": 9100,
         "Tags": [
@@ -108,7 +108,7 @@ register_node_exporter() {
             "biz=基础环境智能监控平台linux",
             "cluster=北中心",
             "env=生产",
-            "instance=192.168.100.201",
+            "instance=192.168.100.202",
             "job=linux",
             "replica=0",
             "support=v1",
