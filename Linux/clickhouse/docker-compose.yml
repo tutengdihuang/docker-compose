@@ -6,9 +6,9 @@ services:
     environment:
       TZ: Asia/Shanghai
     volumes:
-      - /home/allen/clickhouse/data:/var/lib/clickhouse
-      - /home/allen/clickhouse/logs:/var/log/clickhouse-server
-      - /home/allen/clickhouse/config:/etc/clickhouse-server
+      - ./data:/var/lib/clickhouse
+      - ./logs:/var/log/clickhouse-server
+      - ./config:/etc/clickhouse-server
     ports:
       - 8123:8123 # HTTP接口
       - 9000:9000 # 原生客户端接口
