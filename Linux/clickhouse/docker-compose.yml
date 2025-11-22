@@ -1,30 +1,29 @@
+version: '3'
 services:
-  clickhouse:
-    image: clickhouse/clickhouse-server:22.3.13
-    container_name: clickhouse
-    restart: unless-stopped
-    environment:
-      TZ: Asia/Shanghai
-    volumes:
-      - /home/allen/clickhouse/data:/var/lib/clickhouse
-      - /home/allen/clickhouse/logs:/var/log/clickhouse-server
-      - /home/allen/clickhouse/config:/etc/clickhouse-server
+  ch_server:
+    image: yandex/clickhouse-server
     ports:
-      - 8123:8123 # HTTP接口
-      - 9000:9000 # 原生客户端接口
-      - 9009:9009 # 集群内部通信端口
-    ulimits:
-      nofile:
-        soft: 262144
-        hard: 262144
-    user: 999:999
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
-    deploy:
-      resources:
-        limits:
-          memory: 4G
+      - "8123:8123"
+      - "9100:9100"
+    volumes:
+      - /vol1/1000/clickhouse_data/conf/docker_related_config.xml:/etc/clickhouse-server/config.d/docker_related_config.xml:rw
+      - /vol1/1000/clickhouse_data/conf/config.xml:/etc/clickhouse-server/config.xml:rw
+      - /vol1/1000/clickhouse_data/conf/users.xml:/etc/clickhouse-server/users.xml:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /vol1/1000/clickhouse_data/log:/var/log/clickhouse-server
+      - /vol1/1000/clickhouse_data/db:/var/lib/clickhouse:rw
+  ch_client:
+    image: yandex/clickhouse-client
+    entrypoint:
+      - /bin/sleep
+    command:
+      - infinity
+
+
+
+docker cp chtmp:/etc/clickhouse-server/config.d/docker_related_config.xml ./
+docker cp chtmp:/etc/clickhouse-server/config.xml ./
+docker cp chtmp:/etc/clickhouse-server/users.xml ./
+-rw-rw-rw- 1 root root 60072 Dec 26  2021 config.xml
+-rw-rw-r-- 1 root root   314 Dec 26  2021 docker_related_config.xml
+-rw-rw-rw- 1 root root  6248 Dec 26  2021 users.xml
