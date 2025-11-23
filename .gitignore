@@ -17,3 +17,6 @@ redis-cluster/redis-6384/data/*
 redis-cluster/redis-6385/data/*
 redis-cluster/redis-6386/data/*
 redis-cluster/redis-6388/data/*
+
+*data
+data*
