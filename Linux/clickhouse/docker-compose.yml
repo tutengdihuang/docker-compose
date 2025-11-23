@@ -1,7 +1,17 @@
 version: '3'
 services:
-  ch_server:
-    image: yandex/clickhouse-server
+  clickhouse:
+    image: clickhouse/clickhouse-server:22.3.13
+    container_name: clickhouse
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: 123456789
+      CLICKHOUSE_DB: mk_data
+    volumes:
+      - ./data:/var/lib/clickhouse
+      - ./logs:/var/log/clickhouse-server
     ports:
       - "8123:8123"
       - "9100:9100"
