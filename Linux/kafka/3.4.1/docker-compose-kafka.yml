@@ -45,11 +45,11 @@ services:
       # 强制禁用 Zookeeper 相关功能
       KAFKA_CFG_ZOOKEEPER_SESSION_TIMEOUT_MS: 0
       KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS: 0
-      # 存储限制配置（限制总存储为 20G）
-      # 每个分区最大 1GB，假设最多 20 个分区，总大小不超过 20GB
-      KAFKA_CFG_LOG_RETENTION_BYTES: "1073741824"
-      # 日志保留时间（1小时）
-      KAFKA_CFG_LOG_RETENTION_HOURS: "1"
+      # 存储限制配置
+      # 每个分区最大 2GB
+      KAFKA_CFG_LOG_RETENTION_BYTES: "2147483648"
+      # 日志保留时间（30分钟）
+      KAFKA_CFG_LOG_RETENTION_MS: "1800000"
       # 日志段大小（128MB），便于管理
       KAFKA_CFG_LOG_SEGMENT_BYTES: "134217728"
     ports:
